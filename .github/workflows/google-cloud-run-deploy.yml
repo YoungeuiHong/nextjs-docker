@@ -30,13 +30,12 @@ jobs:
 
       - name: Configure Docker
         run: |
-          gcloud auth configure-docker
+          gcloud auth configure-docker ${{ secrets.GAR_LOCATION }}-docker.pkg.dev
 
       - name: Build and Push Docker Image
         run: |
-          gcloud builds submit \
-            --tag ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_REGISTRY_NAME }}/${{ secrets.DOCKER_IMAGE_NAME }} \
-            --project ${{ secrets.GCP_PROJECT_ID }}
+          docker build -t "${{ secrets.GAR_LOCATION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_REGISTRY_NAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:${{ github.sha }}" ./app
+          docker push "${{ secrets.GAR_LOCATION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_REGISTRY_NAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:${{ github.sha }}"
 
       - name: Deploy to Cloud Run
         run: |
