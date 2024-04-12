@@ -1,7 +1,13 @@
 import Head from "next/head";
 import styles from "../styles/Home.module.css";
 
-export default function Home() {
+export const getServerSideProps = (async () => {
+  const res = await fetch('https://www.junglers-zzinmind.store/api/hello')
+  const user = await res.json()
+  return { props: { user } }
+});
+
+export default function Home({ user }) {
   return (
     <div className={styles.container}>
       <Head>
@@ -15,8 +21,7 @@ export default function Home() {
         </h1>
 
         <p className={styles.description}>
-          Get started by editing{" "}
-          <code className={styles.code}>pages/index.js</code>
+          Hello, {user.name}! 👋🏻
         </p>
 
         <div className={styles.grid}>
